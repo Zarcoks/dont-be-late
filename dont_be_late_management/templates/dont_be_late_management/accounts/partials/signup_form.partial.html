@@ -1,0 +1,5 @@
+<form hx-post="{% url 'signup' %}" hx-target="this" hx-swap="outerHTML" id="signup-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="signup">
+</form>
