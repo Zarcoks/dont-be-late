@@ -3,13 +3,41 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Don't be late{% endblock %}</title>
     <link href="{% static 'bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'bootstrap-icons.min.css' %}" rel="stylesheet">
     <script src="{% static 'bootstrap.min.js' %}" defer></script>
     <script src="{% static 'htmx.min.js' %}" defer></script>
 </head>
-<body>
+<body class="bg-body-tertiary">
+    <nav class="navbar bg-body border-bottom">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'dashboard' %}">Don't be late</a>
+
+            {% if user.is_authenticated %}
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        {{ user.username }}
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{% url 'dashboard' %}">Dashboard</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form method="post" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button class="dropdown-item" type="submit">Log out</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            {% else %}
+                <a class="btn btn-primary" href="{% url 'login' %}">Log in</a>
+            {% endif %}
+        </div>
+    </nav>
+
     {% block content %}{% endblock %}
 </body>
 </html>

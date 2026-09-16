@@ -1,6 +1,26 @@
-<form hx-post="{% url 'login' %}" hx-target="this" hx-swap="outerHTML" id="login-form">
+<form id="login-form" method="post" action="{% url 'login' %}">
     {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="login">
-{#    TODO Signup url #}
+
+    {% for error in form.non_field_errors %}
+        <div class="alert alert-danger" role="alert">{{ error }}</div>
+    {% endfor %}
+
+    <div class="mb-3">
+        <label class="form-label" for="id_username">Username</label>
+        <input class="form-control" type="text" name="username" id="id_username"
+               value="{{ form.username.value|default:'' }}" autofocus required>
+        {% for error in form.username.errors %}
+            <div class="form-text text-danger">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="mb-4">
+        <label class="form-label" for="id_password">Password</label>
+        <input class="form-control" type="password" name="password" id="id_password" required>
+        {% for error in form.password.errors %}
+            <div class="form-text text-danger">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <button class="btn btn-primary w-100" type="submit">Log in</button>
 </form>

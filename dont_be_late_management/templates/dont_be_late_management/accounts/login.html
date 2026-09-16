@@ -1,5 +1,18 @@
 {% extends "dont_be_late_management/base/base.html" %}
 
+{% block title %}Log in{% endblock %}
+
 {% block content %}
-    {% include "dont_be_late_management/accounts/partials/login_form.partial.html" %}
+<main class="container py-5" style="max-width: 26rem;">
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+            <h1 class="h4 card-title mb-3">Log in</h1>
+            {% include "dont_be_late_management/accounts/partials/login_form.partial.html" %}
+        </div>
+    </div>
+
+    <p class="text-center text-body-secondary mt-3 mb-0">
+        No account yet? <a href="{% url 'signup' %}">Sign up</a>
+    </p>
+</main>
 {% endblock %}
