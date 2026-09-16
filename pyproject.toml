@@ -1,0 +1,14 @@
+[project]
+name = "dont-be-late"
+version = "0.1.0"
+description = "Scrap the web to ancipate delays on transports."
+readme = "README.md"
+authors = [
+    { name = "Victor Jost", email = "victor.jost@telecom-sudparis.eu" },
+    { name = "Deraina Adriambala", email = "deraina-ny-avo.adriambala@telecom-sudparis.eu" },
+    { name = "Laabid El Bagari Basma", email = "basma.laabid-el-bagari@telecom-sudparis.eu" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "django>=6.1.1",
+]
