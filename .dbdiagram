@@ -1,0 +1,61 @@
+// Table User de Django (django.contrib.auth), réduite aux champs principaux
+Table auth_user {
+  id integer [pk, increment]
+  username varchar
+  email varchar
+  first_name varchar
+  last_name varchar
+  is_active boolean
+  date_joined timestamp
+  default_location integer [not null, ref: > location.id]
+}
+
+Table calendar {
+  id bigint [pk, increment]
+  user_id integer [not null, ref: > auth_user.id]
+  name varchar
+  url varchar
+  last_update timestamp
+  default_location integer [not null, ref: > location.id]
+}
+
+Table calendar_event {
+  id bigint [pk, increment]
+  calendar_id integer [not null, ref: > calendar.id]
+  starting_time timestamp [not null]
+  ending_time timestamp [not null]
+  location integer [not null, ref: > location.id]
+  event_title varchar
+  contact_name varchar
+  raw_location varchar
+}
+
+Table location {
+  id bigint [pk, increment]
+  address varchar
+  name varchar
+}
+
+Table trip {
+  id bigint [pk, increment]
+  priority integer
+  target_duration integer
+  doubt_calculus integer // calculated by the app by 15mn * transport changes
+  origin_location integer [not null, ref: > location.id]
+  arrival_location integer [not null, ref: > location.id]
+}
+
+Table line {
+  id bigint [pk, increment]
+  trip_id integer [not null, ref: > trip.id]
+  line_id int
+  origin_stop varchar [not null]
+  arrival_stop varchar [not null]
+}
+
+Table guess_log {
+  id bigint [pk, increment]
+  event_id integer [not null, ref: > calendar_event.id]
+  guessed_delay integer
+  guess_time timestamp
+}
