@@ -1,38 +1,37 @@
 # models.py
 from django.utils import timezone
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import User
 from django.db import models
 
 
 class Location(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="locations",)
     name = models.CharField(max_length=255)
-    address = models.CharField(max_length=500, blank=True) # If blank then it's a "free" location
+    address = models.CharField(max_length=500)
     is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
 
 
-class User(AbstractUser):
-    default_location = models.ForeignKey(Location, on_delete=models.DO_NOTHING)
+class UserPreferences(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    default_location = models.ForeignKey(Location, on_delete=models.PROTECT, null=True)
 
 
 class Calendar(models.Model):
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name="calendars",
-    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="calendars",)
     name = models.CharField(max_length=255)
     url = models.URLField(max_length=2048)
-    last_update = models.DateTimeField(default=timezone.now())
-    default_location = models.ForeignKey(Location, on_delete=models.DO_NOTHING)
+    last_update = models.DateTimeField(default=timezone.now)
+    default_location = models.ForeignKey(Location, on_delete=models.PROTECT, null=True)
 
     def __str__(self):
         return self.name
 
 
 class CalendarEvent(models.Model):
+    uid = models.CharField(unique=True) # UID from the import (not automatic)
     calendar = models.ForeignKey(
         Calendar,
         on_delete=models.CASCADE,
@@ -41,7 +40,8 @@ class CalendarEvent(models.Model):
     ending_time = models.DateTimeField()
     location = models.ForeignKey(
         Location,
-        on_delete=models.DO_NOTHING,
+        on_delete=models.PROTECT,
+        null=True
     )
     event_title = models.CharField(max_length=500)
     contact_name = models.CharField(max_length=255, blank=True)
@@ -54,11 +54,13 @@ class Trip(models.Model):
     doubt_calculus = models.PositiveIntegerField(default=0) # Should be calculated by the app (for ex 15mn * nb_transport_changes)
     origin_location = models.ForeignKey(
         Location,
-        on_delete=models.DO_NOTHING,
+        on_delete=models.PROTECT,
+        related_name="trips_from"
     )
     arrival_location = models.ForeignKey(
         Location,
-        on_delete=models.DO_NOTHING,
+        on_delete=models.PROTECT,
+        related_name="trips_to"
     )
 
 

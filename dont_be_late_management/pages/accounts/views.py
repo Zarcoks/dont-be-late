@@ -31,7 +31,7 @@ class SignUp(View):
             form.save()
             return redirect("login")
         template = "dont_be_late_management/accounts/partials/signup_form.partial.html" if request.headers.get(
-            "HX-Request") else "dont_be_late_management/accounts/login.html"
+            "HX-Request") else "dont_be_late_management/accounts/signup.html"
         return render(request, template, {"form": form})
 
 

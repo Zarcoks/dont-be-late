@@ -7,7 +7,6 @@ Table auth_user {
   last_name varchar
   is_active boolean
   date_joined timestamp
-  default_location integer [not null, ref: > location.id]
 }
 
 Table calendar {
@@ -20,7 +19,7 @@ Table calendar {
 }
 
 Table calendar_event {
-  id bigint [pk, increment]
+  uid bigint [pk, increment] // ics id
   calendar_id integer [not null, ref: > calendar.id]
   starting_time timestamp [not null]
   ending_time timestamp [not null]
@@ -32,6 +31,7 @@ Table calendar_event {
 
 Table location {
   id bigint [pk, increment]
+  user_id integer [not null, ref: > auth_user.id]
   address varchar
   name varchar
 }
@@ -55,7 +55,12 @@ Table line {
 
 Table guess_log {
   id bigint [pk, increment]
-  event_id integer [not null, ref: > calendar_event.id]
+  event_id integer [not null, ref: > calendar_event.uid]
   guessed_delay integer
   guess_time timestamp
+}
+
+Table user_preferences {
+  user_id integer [not null, ref: > auth_user.id]
+  default_location integer [not null, ref: > location.id]
 }
