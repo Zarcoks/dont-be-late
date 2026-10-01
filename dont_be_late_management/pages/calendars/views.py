@@ -1,4 +1,6 @@
+from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.shortcuts import render, redirect
 
@@ -7,17 +9,12 @@ from dont_be_late_management.pages.calendars.forms import CalendarForm
 
 
 @login_required
-# Get the dashboard page for calendars
-def calendar_main(request):
+def calendar_list(request):
     calendars = request.user.calendars.all()
-    locations = request.user.locations.all()
-    form = CalendarForm(user=request.user) # temp
-
-    return render(request, 'dont_be_late_management/calendars/calendars.html', {"calendars": calendars, "locations": locations, "form": form})
+    return render(request, 'dont_be_late_management/calendars/partials/calendars_list.html', {"calendars": calendars})
 
 
-@login_required
-class NewCalendar(View):
+class NewCalendar(LoginRequiredMixin, View):
     def get(self, request):
         form = CalendarForm(user=request.user)
         return render(request, 'dont_be_late_management/calendars/partials/calendars_form.html', {"form": form})
@@ -26,5 +23,7 @@ class NewCalendar(View):
         form = CalendarForm(request.POST, instance=Calendar(user=request.user), user=request.user)
         if form.is_valid():
             form.save()
-            return redirect("calendars")
+            calendars = request.user.calendars.all()
+            return render(request, 'dont_be_late_management/calendars/partials/calendars_list.html',
+                          {"calendars": calendars})
         return render(request, 'dont_be_late_management/calendars/partials/calendars_form.html', {"form": form})

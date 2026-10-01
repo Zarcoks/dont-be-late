@@ -1,0 +1,7 @@
+<h1>New locations</h1>
+<form hx-post="{% url 'new_locations' %}">
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit">Submit</button>
+    <button hx-get="{% url 'locations_list' %}" hx-target="#locations_list" hx-swap="outerHTML">Cancel</button>
+</form>

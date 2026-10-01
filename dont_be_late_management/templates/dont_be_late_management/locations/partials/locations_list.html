@@ -1,0 +1,8 @@
+<div id="locations_list">
+    <ul>
+    {% for location in locations %}
+        <li>{{ location.name }}: {{ location.address }}</li>
+    {% endfor %}
+    </ul>
+    <button hx-get="{% url 'new_locations' %}" hx-target="this" hx-swap="outerHTML">Add a new location</button>
+</div>

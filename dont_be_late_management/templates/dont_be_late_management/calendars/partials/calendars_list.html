@@ -1,0 +1,8 @@
+<div id="calendar_list">
+    <ul>
+    {% for calendar in calendars %}
+        <li>{{ calendar.name }}</li>
+    {% endfor %}
+    </ul>
+    <button hx-get="{% url 'new_calendars' %}" hx-target="this" hx-swap="outerHTML">Add a new calendar</button>
+</div>
