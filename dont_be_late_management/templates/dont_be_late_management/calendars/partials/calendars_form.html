@@ -1,6 +1,6 @@
 <div id="new_calendar" hx-target="#new_calendar" hx-swap="outerHTML">
     <h1>New calendar</h1>
-    <form hx-post="{% url 'new_calendars' %}">
+    <form hx-post="{% url 'new_calendars' %}" hx-target="#calendar_list" hx-swap="outerHTML">
         {% csrf_token %}
         {{ form }}
         <button type="submit">Submit</button>

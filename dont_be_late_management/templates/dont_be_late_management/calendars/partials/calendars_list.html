@@ -1,4 +1,4 @@
-<div id="calendar_list">
+<div id="calendar_list" hx-target="#calendar_list" hx-swap="outerHTML">
     <ul>
     {% for calendar in calendars %}
         <li>{{ calendar.name }}</li>
