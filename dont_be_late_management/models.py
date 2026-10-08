@@ -8,6 +8,8 @@ class Location(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="locations",)
     name = models.CharField(max_length=255)
     address = models.CharField(max_length=500)
+    city = models.CharField(max_length=100)
+    postal = models.CharField(max_length=20)
     is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
@@ -15,7 +17,7 @@ class Location(models.Model):
 
 
 class UserPreferences(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="preferences")
     default_location = models.ForeignKey(Location, on_delete=models.PROTECT, null=True)
 
 

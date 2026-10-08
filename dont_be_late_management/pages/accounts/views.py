@@ -1,9 +1,14 @@
 from django.contrib.auth import login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LogoutView
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
-from django.http import HttpResponse
 from django.views import View
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, resolve_url
+
+from dont_be_late_management.models import UserPreferences
+from dont_be_late_management.pages.locations.forms import LocationForm
+from dont_be_late_management.utils.utils import hx_or_http_redirect
+
 
 class LoginView(View):
     def get(self, request):
@@ -15,8 +20,9 @@ class LoginView(View):
         if form.is_valid():
             login(request, form.get_user())
             return redirect("dashboard")
-        # In case of HTMX request, we just want to send the partial:
-        template = "dont_be_late_management/accounts/partials/login_form.partial.html" if request.headers.get("HX-Request") else "dont_be_late_management/accounts/login.html"
+
+        template = "dont_be_late_management/accounts/partials/login_form.partial.html" if request.headers.get(
+            "HX-Request") else "dont_be_late_management/accounts/login.html"
         return render(request, template, {"form": form})
 
 
@@ -30,6 +36,7 @@ class SignUp(View):
         if form.is_valid():
             form.save()
             return redirect("login")
+
         template = "dont_be_late_management/accounts/partials/signup_form.partial.html" if request.headers.get(
             "HX-Request") else "dont_be_late_management/accounts/signup.html"
         return render(request, template, {"form": form})
@@ -38,6 +45,12 @@ class SignUp(View):
 class LogOut(LogoutView):
     def post(self, request, *args, **kwargs):
         super().post(request, *args, **kwargs) # logout logic
-        if request.headers.get("HX-Request"):
-            return HttpResponse(headers={"HX-Redirect": self.get_success_url()}) # Takes next if given, LOGOUT_REDIRECT_UTL else
-        return redirect(self.get_success_url())
+        return hx_or_http_redirect(request, self.get_success_url())
+
+
+class DefaultLocationForm(LoginRequiredMixin, View):
+    def get(self, request):
+        if not UserPreferences.objects.filter(user=request.user).exists():
+            form = LocationForm(suggested_name="Home")
+            return render(request, 'dont_be_late_management/accounts/preferences_form.html', {"form": form})
+        return hx_or_http_redirect(request, resolve_url("dashboard"))
