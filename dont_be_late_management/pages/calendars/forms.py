@@ -7,6 +7,11 @@ class CalendarForm(forms.ModelForm):
     class Meta:
         model = Calendar
         fields = ['name', 'url', 'default_location']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'url': forms.URLInput(attrs={'class': 'form-control'}),
+            'default_location': forms.Select(attrs={'class': 'form-select'}),
+        }
 
     def __init__(self, *args, user, **kwargs):
         super().__init__(*args, **kwargs)

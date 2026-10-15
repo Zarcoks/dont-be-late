@@ -13,12 +13,7 @@ class Location(models.Model):
     is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.name
-
-
-class UserPreferences(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="preferences")
-    default_location = models.ForeignKey(Location, on_delete=models.PROTECT, null=True)
+        return "[" + self.user.username + "] " + self.name
 
 
 class Calendar(models.Model):

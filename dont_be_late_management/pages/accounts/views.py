@@ -1,12 +1,8 @@
 from django.contrib.auth import login, logout
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LogoutView
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.views import View
-from django.shortcuts import render, redirect, resolve_url
-
-from dont_be_late_management.models import UserPreferences
-from dont_be_late_management.pages.locations.forms import LocationForm
+from django.shortcuts import render, redirect
 from dont_be_late_management.utils.utils import hx_or_http_redirect
 
 
@@ -46,11 +42,3 @@ class LogOut(LogoutView):
     def post(self, request, *args, **kwargs):
         super().post(request, *args, **kwargs) # logout logic
         return hx_or_http_redirect(request, self.get_success_url())
-
-
-class DefaultLocationForm(LoginRequiredMixin, View):
-    def get(self, request):
-        if not UserPreferences.objects.filter(user=request.user).exists():
-            form = LocationForm(suggested_name="Home")
-            return render(request, 'dont_be_late_management/accounts/preferences_form.html', {"form": form})
-        return hx_or_http_redirect(request, resolve_url("dashboard"))

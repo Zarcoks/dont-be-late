@@ -43,3 +43,10 @@
 
 **Victor :**
 - Implémentation des Locations. Grace à elles l'import des évènements pourra etre faite.
+
+
+### Séance du 15/10/2026
+
+**Victor :**
+- Construction des pages HTML / CSS pour l'import du calendrier et du location. 
+- J'ai enlevé le système qui forcait l'utilisateur à renseigner son lieu de vie parce que c'était trop complexe par rapport au temps qu'il nous reste.

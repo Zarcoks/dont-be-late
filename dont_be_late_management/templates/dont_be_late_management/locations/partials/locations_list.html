@@ -1,8 +1,26 @@
-<div id="locations_list">
-    <ul>
-    {% for location in locations %}
-        <li>{{ location.name }}: {{ location.address }}</li>
-    {% endfor %}
+<div id="locations_list" class="card">
+    <div class="card-header fw-semibold">
+        Locations
+    </div>
+
+    <ul class="list-group list-group-flush">
+        {% for location in locations %}
+            <li class="list-group-item">
+                <div>
+                    {{ location.name }}
+                    {% if location.is_default %}<span class="badge text-bg-primary">Home</span>{% endif %}
+                </div>
+                <small class="text-body-secondary">{{ location.address }}, {{ location.postal }} {{ location.city }}</small>
+            </li>
+        {% empty %}
+            <li class="list-group-item text-body-secondary fst-italic">No location yet</li>
+        {% endfor %}
     </ul>
-    <button hx-get="{% url 'new_locations' %}" hx-target="this" hx-swap="outerHTML">Add a new location</button>
+
+    <div class="card-body">
+        <button class="btn btn-outline-primary btn-sm w-100" type="button"
+                hx-get="{% url 'new_locations' %}" hx-target="this" hx-swap="outerHTML">
+            + Add a location
+        </button>
+    </div>
 </div>

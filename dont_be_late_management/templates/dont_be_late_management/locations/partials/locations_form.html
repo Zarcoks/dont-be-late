@@ -1,7 +1,25 @@
-<h1>New location</h1>
+<h2 class="h6 mb-3">New location</h2>
+
 <form hx-post="{% url 'new_locations' %}">
     {% csrf_token %}
-    {{ form }}
-    <button type="submit">Submit</button>
-    <button hx-get="{% url 'locations_list' %}" hx-target="#locations_list" hx-swap="outerHTML">Cancel</button>
+
+    {% for error in form.non_field_errors %}
+        <div class="alert alert-danger py-2">{{ error }}</div>
+    {% endfor %}
+
+    {% for field in form %}
+        <div class="mb-3">
+            <label class="form-label small" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% for error in field.errors %}
+                <div class="form-text text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+    <div class="d-flex gap-2">
+        <button class="btn btn-primary btn-sm" type="submit">Add</button>
+        <button class="btn btn-outline-secondary btn-sm" type="button"
+                hx-get="{% url 'locations_list' %}" hx-target="#locations_list" hx-swap="outerHTML">Cancel</button>
+    </div>
 </form>
