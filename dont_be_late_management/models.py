@@ -41,7 +41,6 @@ class CalendarEvent(models.Model):
         null=True
     )
     event_title = models.CharField(max_length=500)
-    contact_name = models.CharField(max_length=255, blank=True)
     raw_location = models.CharField(max_length=500, blank=True)
 
     class Meta:

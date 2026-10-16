@@ -15,3 +15,12 @@ Si `uv` n'est pas installé :
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
+
+
+En attendant que le docker compose soit réalisé, voici comment lancer celery:
+```bash
+docker run -d --name dbl-redis -p 6379:6379 redis:8-alpine
+```
+
+Cela suppose un Redis lancé au préalable
+TODO: Reparer le celery ?
