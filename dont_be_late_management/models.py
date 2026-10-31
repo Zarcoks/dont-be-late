@@ -17,7 +17,7 @@ class Location(models.Model):
 
 
 class Calendar(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="calendars",)
+    user = models.OneToOneField(to=User, on_delete=models.CASCADE, related_name="calendar",)
     name = models.CharField(max_length=255)
     url = models.URLField(max_length=2048)
     last_update = models.DateTimeField(default=timezone.now)
@@ -32,6 +32,7 @@ class CalendarEvent(models.Model):
     calendar = models.ForeignKey(
         Calendar,
         on_delete=models.CASCADE,
+        related_name="events",
     )
     starting_time = models.DateTimeField()
     ending_time = models.DateTimeField()

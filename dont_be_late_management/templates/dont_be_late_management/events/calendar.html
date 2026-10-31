@@ -1,0 +1,27 @@
+{% extends "dont_be_late_management/base/base.html" %}
+
+{% block title %}Your calendar{% endblock %}
+
+{% block content %}
+<main class="container py-4" style="max-width: 720px">
+    <div class="card">
+        <div class="card-body">
+            {% if calendar %}
+                <h1 class="h5">Edit your calendar</h1>
+            {% else %}
+                <h1 class="h5">Add your calendar</h1>
+                <p class="text-body-secondary">Paste the link to your .ics calendar to see your upcoming events.</p>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                {{ form }}
+                <button class="btn btn-primary mt-3" type="submit">Save</button>
+                {% if calendar %}
+                    <a class="btn btn-outline-secondary mt-3" href="{% url 'event_dashboard' %}">Cancel</a>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock %}

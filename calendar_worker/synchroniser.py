@@ -33,7 +33,7 @@ def synchronise_one_calendar(calendar):
                 existing.event_title = title
                 existing.raw_location = raw_location
                 existing.save()
-                return
+                continue
 
             CalendarEvent.objects.create(
                 calendar=calendar,
