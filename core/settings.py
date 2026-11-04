@@ -137,4 +137,5 @@ CELERY_BEAT_SCHEDULE = {
         "task": "disruption_worker.tasks.check_upcoming_trips",
         "schedule": 10.0, #10s test
     },
+    
 }
