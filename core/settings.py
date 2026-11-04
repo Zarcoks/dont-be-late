@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'dont_be_late_management'
+    'dont_be_late_management',
+    'disruption_worker',
 ]
 
 MIDDLEWARE = [
