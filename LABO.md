@@ -36,16 +36,26 @@
 
 ### Séance du 01/10/2026
 
+**Deraina :**
+Etude des données de sorties de l'API Prim et formation celery
+https://docs.celeryq.dev/en/stable/django/first-steps-with-django.html
+
 **Victor :**
 - Début de l'implémentation de l'import calendriers (reste à faire import des évènements)
 
 ### Séance du 08/10/2026
+
+**Deraina :**
+Reformalisation des fonctionnalités attendus dans le cahier des charges
 
 **Victor :**
 - Implémentation des Locations. Grace à elles l'import des évènements pourra etre faite.
 
 
 ### Séance du 15/10/2026
+
+**Deraina :**
+Début d'implémentation du worker celery pour récupérer les données de retard
 
 **Victor :**
 - Construction des pages HTML / CSS pour l'import du calendrier et du location. 

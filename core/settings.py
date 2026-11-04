@@ -127,3 +127,6 @@ LOGIN_URL = "login"
 LOGOUT_REDIRECT_URL = "login"
 
 STATICFILES_DIRS = [BASE_DIR / "static"]
+
+# add a redis broker 
+CELERY_BROKER_URL = "redis://localhost:6379/0"
