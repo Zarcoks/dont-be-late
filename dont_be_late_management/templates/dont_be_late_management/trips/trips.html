@@ -64,22 +64,14 @@
         </form>
     </div>
 
-    <!-- Locations -->
     <div class="card">
         <div class="card-header fw-semibold">Locations</div>
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item">
-                <div>Home</div>
-                <small class="text-body-secondary">{# address #}</small>
-            </li>
-            <li class="list-group-item">
-                <div>{# others #}</div>
-                <small class="text-body-secondary">{# address #}</small>
-            </li>
-        </ul>
-        <div class="card-body">
-            <a class="btn btn-outline-primary btn-sm w-100" href="#">+ Add a location</a>
+
+        <div id="locations-container">
+            {% include "dont_be_late_management/trips/partials/locations_list.html" %}
         </div>
+
+        {% include "dont_be_late_management/trips/partials/add_button.html" %}
     </div>
 </main>
 {% endblock %}

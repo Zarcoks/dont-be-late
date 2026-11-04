@@ -10,6 +10,7 @@ def synchronise_calendars():
     calendars = Calendar.objects.all()
     for cal in calendars:
         synchronise_one_calendar(cal)
+
     logging.info(f"{calendars.count()} calendars updated.")
 
 
