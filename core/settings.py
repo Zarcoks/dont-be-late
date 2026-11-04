@@ -131,3 +131,10 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 
 # add a redis broker 
 CELERY_BROKER_URL = "redis://localhost:6379/0"
+
+CELERY_BEAT_SCHEDULE = {
+    "check-upcoming-trips": {
+        "task": "disruption_worker.tasks.check_upcoming_trips",
+        "schedule": 10.0, #10s test
+    },
+}
