@@ -55,3 +55,12 @@
 ### Séance du 04/11/2026 et week-ends
 **Victor :**
 - Formulaire du Locations
+
+### Séance du 05/11/2026
+**Victor :**
+- Formulaire de création de trajets / lignes
+- On est parti pour enregistrer les données de la RATP sur l'id des lignes et des arrets pour pouvoir faire des selects
+à l'utilisateurs utilisables. 
+- J'ai pu finir les views ou presque, il faut faire les templates du formulaire. 
+
+TODO une vue admin pour importer les données IDFM

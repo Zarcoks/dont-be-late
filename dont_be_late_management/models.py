@@ -4,6 +4,26 @@ from django.contrib.auth.models import User
 from django.db import models
 
 
+# Imported RATP data for stops
+class Stop(models.Model):
+  stop_id = models.CharField(max_length=100, unique=True)
+  name = models.CharField(max_length=255)
+
+  def __str__(self):
+    return self.name
+
+
+# Imported RATP data for lines
+class Route(models.Model):
+  route_id = models.CharField(max_length=100, unique=True) # ex: IDFM:C01742
+  short_name = models.CharField(max_length=50) # ex: "A", "1"
+  long_name = models.CharField(max_length=255)  # ex: "Cergy-le-Haut <> Marne-la-Vallée"
+  route_type = models.IntegerField()  # 0 = tram, 1 = metro, 2 = RER, 3 = bus
+
+  def __str__(self):
+      return self.route_id
+
+
 class Location(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="locations",)
     name = models.CharField(max_length=255)
@@ -49,13 +69,11 @@ class CalendarEvent(models.Model):
 
 
 class Trip(models.Model):
-    priority = models.IntegerField(default=0) # The way to order the trips you prefer
-    target_duration = models.PositiveIntegerField()
-    doubt_calculus = models.PositiveIntegerField(default=0) # Should be calculated by the app (for ex 15mn * nb_transport_changes)
+    user = models.OneToOneField(to=User, on_delete=models.CASCADE, related_name="trip")
     origin_location = models.ForeignKey(
         Location,
         on_delete=models.PROTECT,
-        related_name="trips_from"
+        related_name="trips_from",
     )
     arrival_location = models.ForeignKey(
         Location,
@@ -64,14 +82,14 @@ class Trip(models.Model):
     )
 
 
-class Line(models.Model):
+class TripLine(models.Model):
     trip = models.ForeignKey(
         Trip,
         on_delete=models.CASCADE,
     )
-    line_id = models.CharField(max_length=255)
-    origin_stop = models.CharField(max_length=255)
-    arrival_stop = models.CharField(max_length=255)
+    route = models.ForeignKey(Route, on_delete=models.DO_NOTHING)
+    origin_stop = models.ForeignKey(Stop, on_delete=models.DO_NOTHING)
+    arrival_stop = models.ForeignKey(Route, on_delete=models.DO_NOTHING)
 
 
 class GuessLog(models.Model):

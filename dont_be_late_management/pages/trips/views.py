@@ -1,9 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render
+from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404
 from django.views import View
 
-from dont_be_late_management.pages.trips.forms import LocationForm
+from dont_be_late_management.models import Trip, Location, TripLine
+from dont_be_late_management.pages.trips.forms import LocationForm, TripForm, TripLineForm
 
 
 def get_active_locations(user):
@@ -36,3 +38,41 @@ class NewLocation(LoginRequiredMixin, View):
             return render(request, "dont_be_late_management/trips/partials/location_created.html",
                           {"locations": get_active_locations(request.user)})
         return render(request, "dont_be_late_management/trips/partials/location_form.html", {"form": form})
+
+
+class NewTrip(LoginRequiredMixin, View):
+    def get(self, request):
+        form = TripForm()
+        return render(request, "trips/partials/trip_form.html" , {"form": form})
+
+    def post(self, request):
+        trip, created = Trip.objects.get_or_create(user=request.user)
+        form = TripForm(request.POST, instance=trip)
+
+        if form.is_valid():
+            form.save()
+            response = HttpResponse(status=204)
+            response['HX-Redirect'] = '/trips/new/line/'
+            return response
+
+        template = "trips/partials/trip_form.html"
+        return render(request, template, {"form": form}, status=400)
+
+
+class NewTripLine(LoginRequiredMixin, View):
+    def get(self, request):
+        form = TripLineForm()
+        return render(request, "trips/partials/trip_line_form.html", {"form": form})
+
+    def post(self, request):
+        trip = get_object_or_404(Trip, user=request.user)
+        form = TripLineForm(request.POST)
+
+        if form.is_valid():
+            trip_line = form.save(commit=False)
+            trip_line.trip = trip
+            trip_line.save()
+
+            return render(request, "trips/partials/trip_line_item.html", {"trip_line": trip_line})
+
+        return render(request, "trips/partials/trip_line_form.html", {"form": form}, status=400)
