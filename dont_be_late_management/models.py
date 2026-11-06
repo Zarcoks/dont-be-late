@@ -78,3 +78,57 @@ class GuessLog(models.Model):
     )
     guessed_delay = models.IntegerField()
     guess_time = models.DateTimeField() # The time when the guess has been done
+
+
+class Meteo(models.Model):
+    # Où et quand
+    postal = models.CharField(max_length=20)  # code postal
+    moment = models.DateTimeField() # heure à laquelle cette météo s'applique
+    recupere_le = models.DateTimeField(default=timezone.now)
+    source = models.CharField(max_length=50,default="manuel")   # "manuel", plus tard "meteo-france"
+
+    # Mesures
+    temperature = models.FloatField()   # °C
+    humidite = models.PositiveSmallIntegerField()   # %
+    pluie = models.FloatField(default=0)    # mm/h
+    rafales = models.PositiveSmallIntegerField(default=0)   #km/h
+
+    #Phénomènes (oui/non)
+    neige = models.BooleanField(default=False)
+    brouillard = models.BooleanField(default=False)
+    orage = models.BooleanField(default=False)
+    secheresse = models.BooleanField(default=False)
+    soleil_bas = models.BooleanField(default=False)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["postal","moment"],name="meteo_unique_lieu_moment"),
+        ]
+
+    #Valeurs calculées, pas stockées
+    @property
+    def canicule(self):
+        return self.temperature > 35
+
+    @property
+    def automne(self):
+        return 9 <= self.moment.month <= 11
+
+    def en_dictionnaire(self):
+        """Format attendu par calculer_retard"""
+        return {
+            "temperature": self.temperature,
+            "humidite": self.humidite,
+            "pluie": self.pluie,
+            "rafales": self.rafales,
+            "neige": self.neige,
+            "brouillard": self.brouillard,
+            "orage": self.orage,
+            "secheresse": self.secheresse,
+            "soleil_bas": self.soleil_bas,
+            "canicule": self.canicule,
+            "automne": self.automne,
+        }
+    
+    def __str__(self):
+        return self.postal + "-" + str(self.moment)
