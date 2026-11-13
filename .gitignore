@@ -10,5 +10,6 @@ db.sqlite3
 # Virtual environments
 .venv
 .idea
+.env
 
 celerybeat-schedule*
