@@ -53,9 +53,12 @@ Reformalisation des fonctionnalités attendus dans le cahier des charges
 
 
 ### Séance du 15/10/2026 et week-ends
+<<<<<<< HEAD
 
 **Deraina :**
 Début d'implémentation du worker celery pour récupérer les données de retard
+=======
+>>>>>>> 3d3c487bd624b78e13bdd7acead811a47338c00b
 
 **Victor :**
 - Construction des pages HTML / CSS pour l'import du calendrier et du location. 

@@ -17,7 +17,7 @@ class Location(models.Model):
 
 
 class Calendar(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="calendars",)
+    user = models.OneToOneField(to=User, on_delete=models.CASCADE, related_name="calendar",)
     name = models.CharField(max_length=255)
     url = models.URLField(max_length=2048)
     last_update = models.DateTimeField(default=timezone.now)
@@ -28,10 +28,11 @@ class Calendar(models.Model):
 
 
 class CalendarEvent(models.Model):
-    uid = models.CharField(unique=True) # UID from the import (not automatic)
+    uid = models.CharField(max_length=255)
     calendar = models.ForeignKey(
         Calendar,
         on_delete=models.CASCADE,
+        related_name="events",
     )
     starting_time = models.DateTimeField()
     ending_time = models.DateTimeField()
@@ -41,8 +42,10 @@ class CalendarEvent(models.Model):
         null=True
     )
     event_title = models.CharField(max_length=500)
-    contact_name = models.CharField(max_length=255, blank=True)
     raw_location = models.CharField(max_length=500, blank=True)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["calendar", "uid"], name="unique_event_per_calendar")]
 
 
 class Trip(models.Model):

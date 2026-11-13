@@ -1,0 +1,8 @@
+<div class="card-body" id="add-location-container" {% if oob %}hx-swap-oob="outerHTML"{% endif %}>
+    <a class="btn btn-outline-primary btn-sm w-100"
+       hx-get="{% url 'new_location' %}"
+       hx-target="#add-location-container"
+       hx-swap="outerHTML">
+       + Add a location
+    </a>
+</div>

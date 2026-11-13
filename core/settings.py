@@ -109,7 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Paris'
 
 USE_I18N = True
 
@@ -134,13 +134,6 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 # add a redis broker 
 CELERY_BROKER_URL = "redis://localhost:6379/0"
 
-CELERY_BEAT_SCHEDULE = {
-    "check-upcoming-trips": {
-        "task": "disruption_worker.tasks.check_upcoming_trips",
-        "schedule": 10.0, #10s test
-    },
-    
-}
-
 IDFM_BASE_URL = os.environ.get("IDFM_BASE_URL", "https://prim.iledefrance-mobilites.fr/marketplace")
 IDFM_API_KEY = os.environ.get("IDFM_API_KEY", "")
+CELERY_TIMEZONE = "Europe/Paris"

@@ -16,3 +16,13 @@ Si `uv` n'est pas installé :
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 # Ne pas oublier de lancer le service redis (docker) ou avec la commande sur Ubuntu : sudo service redis-server start
+
+
+En attendant que le docker compose soit réalisé, voici comment lancer celery:
+```bash
+docker run -d --name dbl-redis -p 6379:6379 redis:8-alpine
+uv run celery -A core beat -l info
+```
+
+Cela suppose un Redis lancé au préalable
+TODO: Reparer le celery ?

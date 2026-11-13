@@ -1,0 +1,58 @@
+<div class="card-body" id="add-location-container">
+    <form hx-post="{% url 'new_location' %}"
+      hx-target="#add-location-container"
+      hx-swap="outerHTML">
+        {% csrf_token %}
+
+        <div class="mb-2">
+            <input type="text" name="name"
+                   value="{{ form.name.value|default_if_none:'' }}"
+                   class="form-control form-control-sm {% if form.name.errors %}is-invalid{% endif %}"
+                   placeholder="Name (ex: Home, Télécom SudParis...)" required>
+            {% if form.name.errors %}
+                <div class="invalid-feedback">{{ form.name.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-2">
+            <input type="text" name="address"
+                   value="{{ form.address.value|default_if_none:'' }}"
+                   class="form-control form-control-sm {% if form.address.errors %}is-invalid{% endif %}"
+                   placeholder="Adress" required>
+            {% if form.address.errors %}
+                <div class="invalid-feedback">{{ form.address.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="row g-2 mb-2">
+            <div class="col-4">
+                <input type="text" name="postal"
+                       value="{{ form.postal.value|default_if_none:'' }}"
+                       class="form-control form-control-sm {% if form.postal.errors %}is-invalid{% endif %}"
+                       placeholder="Postal Code" required>
+                {% if form.postal.errors %}
+                    <div class="invalid-feedback">{{ form.postal.errors.0 }}</div>
+                {% endif %}
+            </div>
+            <div class="col-8">
+                <input type="text" name="city"
+                       value="{{ form.city.value|default_if_none:'' }}"
+                       class="form-control form-control-sm {% if form.city.errors %}is-invalid{% endif %}"
+                       placeholder="City" required>
+                {% if form.city.errors %}
+                    <div class="invalid-feedback">{{ form.city.errors.0 }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary btn-sm w-50">Submit</button>
+            <button type="button" class="btn btn-secondary btn-sm w-50"
+                    hx-get="{% url 'cancel_create_location' %}"
+                    hx-target="#add-location-container"
+                    hx-swap="outerHTML">
+                Cancel
+            </button>
+        </div>
+    </form>
+</div>

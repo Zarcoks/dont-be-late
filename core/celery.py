@@ -2,8 +2,25 @@ import os
 
 from celery import Celery
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings")
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 
-app = Celery("core")
-app.config_from_object("django.conf:settings", namespace="CELERY")
+app = Celery('dont_be_late')
+
+
+app.config_from_object('django.conf:settings', namespace='CELERY')
+
 app.autodiscover_tasks()
+app.autodiscover_tasks(['calendar_worker'])
+
+app.conf.timezone = 'Europe/Paris'
+
+app.conf.beat_schedule = {
+    'sync_calendars': {
+        'task': 'calendar_worker.sync_calendars',
+        'schedule': 10, # in seconds
+    },
+    "check-upcoming-trips": {
+        "task": "disruption_worker.tasks.check_upcoming_trips",
+        "schedule": 10.0, #10s test
+    },
+}

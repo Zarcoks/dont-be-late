@@ -1,0 +1,10 @@
+<ul class="list-group list-group-flush" id="locations-list" {% if oob %}hx-swap-oob="true"{% endif %}>
+    {% for location in locations %}
+    <li class="list-group-item">
+        <div class="fw-semibold">{{ location.name }}</div>
+        <small class="text-body-secondary">
+            {{ location.address }}, {{ location.postal }} {{ location.city }}
+        </small>
+    </li>
+    {% endfor %}
+</ul>

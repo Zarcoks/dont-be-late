@@ -1,0 +1,26 @@
+{% extends "dont_be_late_management/base/base.html" %}
+
+{% block title %}Tomorrow leave at...{% endblock %}
+
+{% block content %}
+<main class="container py-5" style="max-width: 540px">
+    <div class="card text-center">
+        <div class="card-body py-5">
+            <p class="text-body-secondary mb-1">Tomorrow, leave at</p>
+            <p class="display-3 fw-bold mb-3">{# Time (TODO) ex 7:42 #}</p>
+            <span class="badge text-bg-warning">{# Delay ex: +12 min TODO #}: {# Reason (ex RER D disrupted) #}</span>
+        </div>
+        <div class="card-footer text-body-secondary small">
+            {# event name #} at {# time #} AM · {# source #} → {# destination #} ({# time calculus #})
+        </div>
+    </div>
+
+{#    TODO This would be if there is no event tomorrow:#}
+{#    <div class="card text-center mt-4">#}
+{#        <div class="card-body py-5">#}
+{#            <p class="h4 mb-2">Nothing tomorrow.</p>#}
+{#            <p class="text-body-secondary mb-0">Sleep in, you've earned it 😴</p>#}
+{#        </div>#}
+{#    </div>#}
+</main>
+{% endblock %}
