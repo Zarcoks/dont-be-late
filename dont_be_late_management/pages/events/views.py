@@ -1,10 +1,13 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
+from django.views import View
 
 from calendar_worker.synchroniser import synchronise_one_calendar
-from dont_be_late_management.models import Calendar
-from dont_be_late_management.pages.events.forms import CalendarForm
+from dont_be_late_management.models import Calendar, CalendarEvent
+from dont_be_late_management.pages.events.forms import CalendarForm, EventEditForm
 
 
 @login_required
@@ -35,3 +38,31 @@ def edit_calendar(request):
         form = CalendarForm(instance=calendar)
 
     return render(request, "dont_be_late_management/events/calendar.html", {"form": form, "calendar": calendar})
+
+
+class EventEdit(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        event = get_object_or_404(CalendarEvent, pk=pk)
+        form = EventEditForm(instance=event)
+        return render(request, 'dont_be_late_management/events/partials/event_form.html', {
+            'event': event,
+            'form': form,
+        })
+
+    def post(self, request, pk):
+        event = get_object_or_404(CalendarEvent, pk=pk)
+        form = EventEditForm(request.POST, instance=event)
+        if form.is_valid():
+            form.save()
+            return render(request, 'dont_be_late_management/events/partials/event_row.html', {
+                'event': event,
+            })
+        return render(request, 'dont_be_late_management/events/partials/event_form.html', {
+            'event': event,
+            'form': form,
+        })
+
+
+def cancel_edit_event(request, pk):
+    event = get_object_or_404(CalendarEvent, pk=pk)
+    return HttpResponse("")

@@ -87,9 +87,9 @@ class TripLine(models.Model):
         Trip,
         on_delete=models.CASCADE,
     )
-    route = models.ForeignKey(Route, on_delete=models.DO_NOTHING)
-    origin_stop = models.ForeignKey(Stop, on_delete=models.DO_NOTHING)
-    arrival_stop = models.ForeignKey(Route, on_delete=models.DO_NOTHING)
+    route = models.ForeignKey(Route, on_delete=models.DO_NOTHING, related_name="trips")
+    origin_stop = models.ForeignKey(Stop, on_delete=models.DO_NOTHING, related_name="trips_from")
+    arrival_stop = models.ForeignKey(Stop, on_delete=models.DO_NOTHING, related_name="trips_to")
 
 
 class GuessLog(models.Model):

@@ -15,7 +15,7 @@ class LoginView(View):
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             login(request, form.get_user())
-            return redirect("dashboard")
+            return redirect("index")
 
         template = "dont_be_late_management/accounts/partials/login_form.partial.html" if request.headers.get(
             "HX-Request") else "dont_be_late_management/accounts/login.html"

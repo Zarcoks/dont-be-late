@@ -1,0 +1,15 @@
+<div class="d-flex justify-content-between align-items-center">
+    <div>
+        <div>{{ event.starting_time|time:"H:i" }} to {{ event.ending_time|time:"H:i" }} - {{ event.event_title }}</div>
+        {% if event.location %}
+            <small class="text-body-secondary">{{ event.location }}</small>
+        {% endif %}
+    </div>
+    <button class="btn btn-outline-secondary btn-sm"
+            hx-get="{% url 'edit_event' event.id %}"
+            hx-target="#event-form-container-{{ event.id }}"
+            hx-swap="innerHTML">
+        Edit
+    </button>
+</div>
+<div id="event-form-container-{{ event.id }}"></div>

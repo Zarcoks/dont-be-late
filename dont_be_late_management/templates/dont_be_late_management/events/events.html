@@ -16,11 +16,27 @@
         {% ifchanged event.starting_time|date:"Y-m-d" %}
             <h2 class="h6 text-body-secondary mt-4">{{ event.starting_time|date:"l j F" }}</h2>
         {% endifchanged %}
-        <div class="bg-body border rounded p-2 mb-2">
-            {{ event.starting_time|time:"H:i" }} to {{ event.ending_time|time:"H:i" }} - {{ event.event_title }}
+
+        <div id="event-item-{{ event.id }}" class="bg-body border rounded p-2 mb-2">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div>{{ event.starting_time|time:"H:i" }} to {{ event.ending_time|time:"H:i" }} - {{ event.event_title }}</div>
+                    {% if event.location %}
+                        <small class="text-body-secondary">{{ event.location }}</small>
+                    {% endif %}
+                </div>
+                <button class="btn btn-outline-secondary btn-sm"
+                        hx-get="{% url 'edit_event' event.id %}"
+                        hx-target="#event-form-container-{{ event.id }}"
+                        hx-swap="innerHTML">
+                    Edit
+                </button>
+            </div>
+
+            <div id="event-form-container-{{ event.id }}"></div>
         </div>
     {% empty %}
-        <p class="text-body-secondary">No upcoming events.</p>
+        <p class="text-body-secondary mt-4">No upcoming events.</p>
     {% endfor %}
 
 </main>

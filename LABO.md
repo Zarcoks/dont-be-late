@@ -60,7 +60,11 @@
 **Victor :**
 - Formulaire de création de trajets / lignes
 - On est parti pour enregistrer les données de la RATP sur l'id des lignes et des arrets pour pouvoir faire des selects
-à l'utilisateurs utilisables. 
+à l'utilisateur utilisable. 
 - J'ai pu finir les views ou presque, il faut faire les templates du formulaire. 
+
+### Weekend du 17/11/2026
+**Victor :**
+- Possibilité d'assigner des locations aux events
 
 TODO une vue admin pour importer les données IDFM
