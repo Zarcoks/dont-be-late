@@ -1,6 +1,6 @@
 from django import forms
 import requests
-from dont_be_late_management.models import Calendar
+from dont_be_late_management.models import Calendar, CalendarEvent
 
 
 class CalendarForm(forms.ModelForm):
@@ -21,3 +21,12 @@ class CalendarForm(forms.ModelForm):
         if not response.text.startswith("BEGIN:VCALENDAR"):
             raise forms.ValidationError("This url does not return an .ics calendar.")
         return url
+
+
+class EventEditForm(forms.ModelForm):
+    class Meta:
+        model = CalendarEvent
+        fields = ['location']
+        widgets = {
+            'location': forms.Select(attrs={'class': 'form-select form-select-sm'}),
+        }

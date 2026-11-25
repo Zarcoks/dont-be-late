@@ -77,6 +77,13 @@ On ne prend pas encore les severité bloquant pour les arrêts non desservis.
 On fera l'implem de la fonction regex pour récupérer le temps exact après
 (?P<nb_heure>\d+)\s*h\w*\s*\w*\s*(?P<nb_minutes>\d+)\s*min\w*
 
+### Séance du 05/11/2026
+**Victor :**
+- Formulaire de création de trajets / lignes
+- On est parti pour enregistrer les données de la RATP sur l'id des lignes et des arrets pour pouvoir faire des selects
+à l'utilisateur utilisable. 
+- J'ai pu finir les views ou presque, il faut faire les templates du formulaire. 
+
 ### 12/11/2026
 
 **Deraina :**
@@ -86,3 +93,14 @@ Ex :
 Départ prévu à 8h avec la D et je me réveille à 7h pour me préparer.
 L'application me signale une perturbation à 7h30 et me dit que le trafic ne se rétablira qu'à 8h30.
 Je peux adapter mon départ pour emprunter le bus de 7h45 pour arriver à l'heure sans prendre la D.
+
+### Weekend du 17/11/2026
+**Victor :**
+- Possibilité d'assigner des locations aux events
+
+### Séance du 25/11/2026
+**Victor :**
+- 
+
+TODO une vue admin pour importer les données IDFM
+

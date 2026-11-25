@@ -11,12 +11,13 @@ def synchronise_calendars():
     for cal in calendars:
         synchronise_one_calendar(cal)
 
-    logging.info(f"{calendars.count()} calendars updated.")
+    print(f"{calendars.count()} calendars updated.")
 
 
 def synchronise_one_calendar(calendar):
     calendar_bytes = utils.fetch_ics(calendar.url)
     ical = ICal.from_ical(calendar_bytes)
+    ics_uids = []
 
     with transaction.atomic():
         for event in ical.walk("VEVENT"):
@@ -26,6 +27,7 @@ def synchronise_one_calendar(calendar):
             end = event["DTEND"].dt
             raw_location = str(event.get("LOCATION", ""))
 
+            ics_uids.append(uid)
             existing = CalendarEvent.objects.filter(calendar=calendar, uid=uid).first()
 
             if existing:
@@ -45,3 +47,5 @@ def synchronise_one_calendar(calendar):
                 raw_location=raw_location,
                 location=calendar.default_location,
             )
+
+        CalendarEvent.objects.filter(calendar=calendar).exclude(uid__in=ics_uids).delete()
