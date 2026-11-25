@@ -1,0 +1,9 @@
+<div id="trip-select-container" class="mb-3">
+    <form
+        hx-get="{% url 'trip_select' %}"
+        hx-target="#trip-select-container"
+        hx-swap="outerHTML"
+        hx-trigger="change">
+        {{ select_form.trip }}
+    </form>
+</div>

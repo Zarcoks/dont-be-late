@@ -1,0 +1,10 @@
+<li id="trip-line-slot-{{ trip.id }}" class="list-group-item">
+    <button
+        class="btn btn-outline-primary btn-sm w-100"
+        type="button"
+        hx-get="{% url 'trip_line_create' %}?trip_id={{ trip.id }}"
+        hx-target="#trip-line-slot-{{ trip.id }}"
+        hx-swap="outerHTML">
+        + Add a leg
+    </button>
+</li>

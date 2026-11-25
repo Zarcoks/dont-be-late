@@ -1,0 +1,43 @@
+<li id="trip-line-slot-{{ trip.id }}" class="list-group-item">
+    <form
+        class="row g-2"
+        hx-post="{% url 'trip_line_create' %}"
+        hx-target="#trip-line-slot-{{ trip.id }}"
+        hx-swap="beforebegin">
+        {% csrf_token %}
+        <input type="hidden" name="trip_id" value="{{ trip.id }}">
+
+        <div class="col-md-3">
+            {{ form.route }}
+            {% if form.route.errors %}
+                <div class="text-danger small mt-1">{{ form.route.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="col-md-3">
+            {{ form.origin_stop }}
+            {% if form.origin_stop.errors %}
+                <div class="text-danger small mt-1">{{ form.origin_stop.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="col-md-3">
+            {{ form.arrival_stop }}
+            {% if form.arrival_stop.errors %}
+                <div class="text-danger small mt-1">{{ form.arrival_stop.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="col-md-3 d-flex gap-2">
+            <button class="btn btn-primary btn-sm flex-fill" type="submit">Save</button>
+            <button
+                class="btn btn-outline-secondary btn-sm flex-fill"
+                type="button"
+                hx-get="{% url 'trip_line_cancel' %}?trip_id={{ trip.id }}"
+                hx-target="#trip-line-slot-{{ trip.id }}"
+                hx-swap="outerHTML">
+                Cancel
+            </button>
+        </div>
+    </form>
+</li>

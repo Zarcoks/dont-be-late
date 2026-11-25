@@ -18,7 +18,7 @@
             {% if user.is_authenticated %}
                 {% url 'index' as index %}
                 {% url 'event_dashboard' as event_url %}
-                {% url 'trip_dashboard' as trip_url %}
+                {% url 'trips_dashboard' as trip_url %}
                 <div class="nav nav-pills">
                     <a class="nav-link {% if request.path == index %}active{% endif %}" href="{{ index }}">Home</a>
                     <a class="nav-link {% if request.path == event_url %}active{% endif %}" href="{{ event_url }}">Events</a>

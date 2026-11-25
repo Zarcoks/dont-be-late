@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Trips - Don't be late</title>
+    <link href="../static/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-body-tertiary">
+    <nav class="navbar bg-body border-bottom">
+        <div class="container">
+            <a class="navbar-brand fw-semibold" href="#">Don't be late</a>
+            <div class="nav nav-pills">
+                <a class="nav-link" href="#">Home</a>
+                <a class="nav-link" href="#">Events</a>
+                <a class="nav-link active" href="#">Trips</a>
+                <a class="nav-link text-body-secondary" href="#">Log out</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container py-4" style="max-width: 720px">
+
+        <!-- New trip: always visible -->
+        <div class="card mb-4">
+            <div class="card-header fw-semibold">New trip</div>
+            <form class="card-body row g-2 align-items-end">
+                <div class="col-sm-5">
+                    <label class="form-label small" for="trip_origin">From</label>
+                    <select class="form-select" id="trip_origin">
+                        <option>Home</option>
+                        <option>Office</option>
+                        <option>Rivoli client</option>
+                        <option>+ New location…</option>
+                    </select>
+                </div>
+                <div class="col-sm-5">
+                    <label class="form-label small" for="trip_destination">To</label>
+                    <select class="form-select" id="trip_destination">
+                        <option>Home</option>
+                        <option>Office</option>
+                        <option selected>Rivoli client</option>
+                        <option>+ New location…</option>
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <button class="btn btn-primary w-100" type="submit">Create</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Existing trips: choose one -->
+        <select class="form-select mb-3" aria-label="Trip">
+            <option selected>Home → Office</option>
+            <option>Office → Rivoli client</option>
+        </select>
+
+        <!-- Selected trip -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span class="fw-semibold">Home → Office</span>
+                <button class="btn btn-outline-danger btn-sm" type="button">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/><path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/></svg>
+                    Delete trip
+                </button>
+            </div>
+
+            <ul class="list-group list-group-flush">
+                <!-- Leg -->
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span><span class="fw-semibold">RER B</span> · Bourg-la-Reine → Châtelet</span>
+                    <button class="btn btn-outline-danger btn-sm" type="button" title="Delete leg">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/><path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/></svg>
+                    </button>
+                </li>
+
+                <!-- Transfer: shown between two legs, not stored -->
+                <li class="list-group-item small text-body-secondary">↓ Transfer at Châtelet</li>
+
+                <!-- Leg -->
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span><span class="fw-semibold">Metro 1</span> · Châtelet → La Défense</span>
+                    <button class="btn btn-outline-danger btn-sm" type="button" title="Delete leg">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/><path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/></svg>
+                    </button>
+                </li>
+
+                <!-- State 1: button, before adding a leg -->
+                <li class="list-group-item">
+                    <button class="btn btn-outline-primary btn-sm w-100" type="button">+ Add a leg</button>
+                </li>
+
+                <!-- State 2: after clicking "+ Add a leg", replaces the button -->
+                <li class="list-group-item">
+                    <form class="row g-2">
+                        <div class="col-md-3">
+                            <input class="form-control form-control-sm" list="lines" placeholder="Line" aria-label="Line" value="RER A">
+                        </div>
+                        <div class="col-md-3">
+                            <input class="form-control form-control-sm" list="stops" placeholder="From" aria-label="From stop" value="La Défense">
+                        </div>
+                        <div class="col-md-3">
+                            <input class="form-control form-control-sm" list="stops" placeholder="To" aria-label="To stop">
+                        </div>
+                        <div class="col-md-3 d-flex gap-2">
+                            <button class="btn btn-primary btn-sm flex-fill" type="submit">Save</button>
+                            <button class="btn btn-outline-secondary btn-sm flex-fill" type="button">Cancel</button>
+                        </div>
+                    </form>
+                </li>
+            </ul>
+
+            <div class="card-footer small text-body-secondary">2 legs · 1 transfer</div>
+        </div>
+
+        <!-- Suggestions for the leg inputs (native browser autocomplete) -->
+        <datalist id="lines">
+            <option value="RER A"></option>
+            <option value="RER B"></option>
+            <option value="Metro 1"></option>
+            <option value="Metro 4"></option>
+        </datalist>
+        <datalist id="stops">
+            <option value="Bourg-la-Reine"></option>
+            <option value="Châtelet"></option>
+            <option value="Châtelet - Les Halles"></option>
+            <option value="La Défense"></option>
+        </datalist>
+
+        <!-- Locations -->
+        <div class="card">
+            <div class="card-header fw-semibold">Locations</div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <div>Home</div>
+                    <small class="text-body-secondary">3 av. du Général Leclerc, 92340 Bourg-la-Reine</small>
+                </li>
+                <li class="list-group-item">
+                    <div>Office</div>
+                    <small class="text-body-secondary">1 parvis de La Défense, 92800 Puteaux</small>
+                </li>
+                <li class="list-group-item">
+                    <div>Rivoli client</div>
+                    <small class="text-body-secondary">12 rue de Rivoli, 75004 Paris</small>
+                </li>
+            </ul>
+            <div class="card-body">
+                <button class="btn btn-outline-primary btn-sm w-100" type="button">+ Add a location</button>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

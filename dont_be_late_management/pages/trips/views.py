@@ -4,8 +4,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.views import View
 
-from dont_be_late_management.models import Trip, Location, TripLine
-from dont_be_late_management.pages.trips.forms import LocationForm, TripForm, TripLineForm
+from dont_be_late_management.pages.trips.forms import *
 
 
 def get_active_locations(user):
@@ -13,7 +12,72 @@ def get_active_locations(user):
 
 @login_required
 def trips_dashboard(request):
-    return render(request, 'dont_be_late_management/trips/trips.html', {"locations": get_active_locations(request.user)})
+    locations = get_active_locations(request.user)
+    trips = Trip.objects.filter(user=request.user).select_related(
+        "origin_location", "arrival_location"
+    )
+    select_form = TripSelectForm(trips=trips)
+    selected_trip = select_form.fields["trip"].initial
+    if selected_trip:
+        selected_trip = trips.filter(pk=selected_trip).first()
+
+    return render(request, "dont_be_late_management/trips/trips.html", {
+        "locations": locations,
+        "trips": trips,
+        "select_form": select_form,
+        "selected_trip": selected_trip,
+    })
+
+
+@login_required
+def select_trip(request):
+    trips = Trip.objects.filter(user=request.user).select_related(
+        "origin_location", "arrival_location"
+    )
+    select_form = TripSelectForm(request.GET or None, trips=trips)
+    selected_trip = select_form.cleaned_data.get("trip") if select_form.is_valid() else None
+    return render(request, "dont_be_late_management/trips/partials/trip_select.html", {
+        "select_form": select_form,
+        "selected_trip": selected_trip,
+    })
+
+
+@login_required
+def cancel_add_trip_line(request):
+    trip_id = request.GET.get("trip_id")
+    trip = get_object_or_404(Trip, pk=trip_id, user=request.user)
+    return render(request, "dont_be_late_management/trips/partials/trip_line_add_button.html", {
+        "trip": trip,
+    })
+
+
+class NewTripLine(LoginRequiredMixin, View):
+    def get(self, request):
+        trip_id = request.GET.get("trip_id")
+        trip = get_object_or_404(Trip, pk=trip_id, user=request.user)
+        form = TripLineForm()
+        return render(request, "dont_be_late_management/trips/partials/trip_line_form.html", {
+            "form": form,
+            "trip": trip,
+        })
+
+    def post(self, request):
+        trip_id = request.POST.get("trip_id")
+        trip = get_object_or_404(Trip, pk=trip_id, user=request.user)
+        form = TripLineForm(request.POST)
+
+        if form.is_valid():
+            trip_line = form.save(commit=False)
+            trip_line.trip = trip
+            trip_line.save()
+            return render(request, "dont_be_late_management/trips/partials/trip_line_item.html", {
+                "trip_line": trip_line,
+            })
+
+        return render(request, "dont_be_late_management/trips/partials/trip_line_form.html", {
+            "form": form,
+            "trip": trip,
+        }, status=400)
 
 
 @login_required
@@ -46,17 +110,19 @@ class NewTrip(LoginRequiredMixin, View):
         return render(request, "trips/partials/trip_form.html" , {"form": form})
 
     def post(self, request):
-        trip, created = Trip.objects.get_or_create(user=request.user)
-        form = TripForm(request.POST, instance=trip)
+        form = TripForm(request.POST, user=request.user)
 
         if form.is_valid():
-            form.save()
+            trip = form.save(commit=False)
+            trip.user = request.user
+            trip.save()
             response = HttpResponse(status=204)
-            response['HX-Redirect'] = '/trips/new/line/'
             return response
 
-        template = "trips/partials/trip_form.html"
-        return render(request, template, {"form": form}, status=400)
+        return render(request, "trips/partials/trip_form.html", {
+            "form": form,
+            "locations": get_active_locations(request.user),
+        }, status=400)
 
 
 class NewTripLine(LoginRequiredMixin, View):

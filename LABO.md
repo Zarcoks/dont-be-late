@@ -69,6 +69,7 @@
 
 ### Séance du 25/11/2026
 **Victor :**
-- 
+- Script pour importer les données de routes et stops depuis IDFM
+- Tout ce qui est trips, le new trip fonctionne, il reste l'ajout des différentes correspondances sur les trajets
 
-TODO une vue admin pour importer les données IDFM
+TODO Docker

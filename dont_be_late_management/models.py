@@ -69,7 +69,7 @@ class CalendarEvent(models.Model):
 
 
 class Trip(models.Model):
-    user = models.OneToOneField(to=User, on_delete=models.CASCADE, related_name="trip")
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name="trip")
     origin_location = models.ForeignKey(
         Location,
         on_delete=models.PROTECT,
@@ -81,6 +81,8 @@ class Trip(models.Model):
         related_name="trips_to"
     )
 
+    def __str__(self):
+        return f"{self.origin_location.name} → {self.arrival_location.name}"
 
 class TripLine(models.Model):
     trip = models.ForeignKey(
