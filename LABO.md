@@ -67,4 +67,8 @@
 **Victor :**
 - Possibilité d'assigner des locations aux events
 
+### Séance du 25/11/2026
+**Victor :**
+- 
+
 TODO une vue admin pour importer les données IDFM

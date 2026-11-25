@@ -21,7 +21,7 @@ class Route(models.Model):
   route_type = models.IntegerField()  # 0 = tram, 1 = metro, 2 = RER, 3 = bus
 
   def __str__(self):
-      return self.route_id
+      return self.short_name + "(" + self.long_name + ")"
 
 
 class Location(models.Model):
