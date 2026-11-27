@@ -103,3 +103,8 @@ TODO une vue admin pour importer les données IDFM
 
 **Deraina :**
 IDFM ne fournit pas la durée du retard, seulement la gravité et la période. On prendra donc une  marge qui est une estimation par gravité (BLOQUANTE : 1h, PERTURBEE : 30 min) affinée par la durée trouvée dans le message quand elle existe
+
+### Séance du 27/11/2026
+**Deraina :**
+J'ai testé le début du worker 1 qui regarde les perturbations de la veille avec le mock de calendrier de Victor et mon mock de perturbations. 
+Les début du worker me semble fonctionnel. Il reste à check les perturbations qui affectent le trajet de l'utilisateur et de connaitre le temps de marge à prendre avec la fonction estimate_delay 
