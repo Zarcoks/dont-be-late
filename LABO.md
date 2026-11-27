@@ -76,5 +76,6 @@
 **Victor :**
 - Amélioration script import de données RATP
 - Ajout formulaire pour déclarer des transfers
+- Boutons delete fonctionnels
 
 TODO Docker
