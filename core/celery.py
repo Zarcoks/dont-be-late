@@ -19,4 +19,8 @@ app.conf.beat_schedule = {
         'task': 'calendar_worker.sync_calendars',
         'schedule': 10, # in seconds
     },
+    "check-upcoming-trips": {
+        "task": "disruption_worker.tasks.check_upcoming_trips",
+        "schedule": 10.0, #10s test
+    },
 }

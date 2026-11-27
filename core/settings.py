@@ -9,12 +9,14 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import os
 from pathlib import Path
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+load_dotenv(BASE_DIR / ".env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -37,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'dont_be_late_management'
+    'dont_be_late_management',
+    'disruption_worker',
 ]
 
 MIDDLEWARE = [
@@ -128,5 +131,9 @@ LOGOUT_REDIRECT_URL = "login"
 
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
-CELERY_BROKER_URL = "redis://localhost:6379/"
+# add a redis broker 
+CELERY_BROKER_URL = "redis://localhost:6379/0"
+
+IDFM_BASE_URL = os.environ.get("IDFM_BASE_URL", "https://prim.iledefrance-mobilites.fr/marketplace")
+IDFM_API_KEY = os.environ.get("IDFM_API_KEY", "")
 CELERY_TIMEZONE = "Europe/Paris"

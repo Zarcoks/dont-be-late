@@ -10,9 +10,6 @@ db.sqlite3
 # Virtual environments
 .venv
 .idea
-.DS_Store
+.env
 
-# celery
-celerybeat-schedule
-celerybeat-schedule-shm
-celerybeat-schedule-wal
+celerybeat-schedule*
