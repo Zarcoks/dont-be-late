@@ -4,6 +4,9 @@ from django.conf import settings
 DISRUPTIONS_PATH = "/disruptions_bulk/disruptions/v2" 
 TIMEOUT_SECONDS = 30
 
+class IdfmError(Exception):
+    pass
+    
 #API which converts idfm response to JSON
 def fetch_disruptions():
     

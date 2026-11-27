@@ -53,12 +53,9 @@ Reformalisation des fonctionnalités attendus dans le cahier des charges
 
 
 ### Séance du 15/10/2026 et week-ends
-<<<<<<< HEAD
 
 **Deraina :**
 Début d'implémentation du worker celery pour récupérer les données de retard
-=======
->>>>>>> 3d3c487bd624b78e13bdd7acead811a47338c00b
 
 **Victor :**
 - Construction des pages HTML / CSS pour l'import du calendrier et du location. 
@@ -104,3 +101,5 @@ Je peux adapter mon départ pour emprunter le bus de 7h45 pour arriver à l'heur
 
 TODO une vue admin pour importer les données IDFM
 
+**Deraina :**
+IDFM ne fournit pas la durée du retard, seulement la gravité et la période. On prendra donc une  marge qui est une estimation par gravité (BLOQUANTE : 1h, PERTURBEE : 30 min) affinée par la durée trouvée dans le message quand elle existe
