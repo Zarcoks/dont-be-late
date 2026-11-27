@@ -8,21 +8,60 @@
         <input type="hidden" name="trip_id" value="{{ trip.id }}">
 
         <div class="col-md-3">
-            {{ form.route }}
+            <input
+                type="text"
+                name="{{ form.route.html_name }}"
+                id="{{ form.route.id_for_label }}"
+                value="{{ form.route.value|default:'' }}"
+                list="route-suggestions"
+                class="form-control form-control-sm"
+                placeholder="Line"
+                hx-get="{% url 'route_filter' %}"
+                hx-target="#route-suggestions"
+                hx-swap="outerHTML"
+                hx-trigger="keyup changed delay:250ms, focus"
+                hx-vals='js:{"q": document.getElementById("{{ form.route.id_for_label }}").value}'>
+            {% include "dont_be_late_management/trips/partials/route_suggestions.html" with routes=routes|default:None %}
             {% if form.route.errors %}
                 <div class="text-danger small mt-1">{{ form.route.errors.0 }}</div>
             {% endif %}
         </div>
 
         <div class="col-md-3">
-            {{ form.origin_stop }}
+            <input
+                type="text"
+                name="{{ form.origin_stop.html_name }}"
+                id="{{ form.origin_stop.id_for_label }}"
+                value="{{ form.origin_stop.value|default:'' }}"
+                list="stop-suggestions"
+                class="form-control form-control-sm"
+                placeholder="From"
+                hx-get="{% url 'stop_filter' %}"
+                hx-target="#stop-suggestions"
+                hx-swap="outerHTML"
+                hx-trigger="keyup changed delay:250ms, focus"
+                hx-vals='js:{"q": document.getElementById("{{ form.origin_stop.id_for_label }}").value}'>
             {% if form.origin_stop.errors %}
                 <div class="text-danger small mt-1">{{ form.origin_stop.errors.0 }}</div>
             {% endif %}
         </div>
 
         <div class="col-md-3">
-            {{ form.arrival_stop }}
+            <input
+                type="text"
+                name="{{ form.arrival_stop.html_name }}"
+                id="{{ form.arrival_stop.id_for_label }}"
+                value="{{ form.arrival_stop.value|default:'' }}"
+                list="stop-suggestions"
+                class="form-control form-control-sm"
+                placeholder="To"
+                hx-get="{% url 'stop_filter' %}"
+                hx-target="#stop-suggestions"
+                hx-swap="outerHTML"
+                hx-trigger="keyup changed delay:250ms, focus"
+                hx-vals='js:{"q": document.getElementById("{{ form.arrival_stop.id_for_label }}").value}'>
+{#        TODO change to better the js line #}
+            {% include "dont_be_late_management/trips/partials/stop_suggestions.html" with stops=stops|default:None %}
             {% if form.arrival_stop.errors %}
                 <div class="text-danger small mt-1">{{ form.arrival_stop.errors.0 }}</div>
             {% endif %}

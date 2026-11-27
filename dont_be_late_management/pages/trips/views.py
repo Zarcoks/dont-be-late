@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q, Prefetch
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.views import View
@@ -10,24 +11,32 @@ from dont_be_late_management.pages.trips.forms import *
 def get_active_locations(user):
     return user.locations.all().filter(is_deleted=False).order_by('pk') # This should always return Home first
 
+
 @login_required
 def trips_dashboard(request):
     locations = get_active_locations(request.user)
-    trips = Trip.objects.filter(user=request.user).select_related(
-        "origin_location", "arrival_location"
+    trips = (
+        Trip.objects.filter(user=request.user)
+        .select_related("origin_location", "arrival_location")
+        .prefetch_related(
+            Prefetch(
+                "transfers",
+                queryset=TripLine.objects.select_related(
+                    "route", "origin_stop", "arrival_stop"
+                ),
+                to_attr="ordered_transfers",
+            )
+        )
     )
-    select_form = TripSelectForm(trips=trips)
-    selected_trip = select_form.fields["trip"].initial
-    if selected_trip:
-        selected_trip = trips.filter(pk=selected_trip).first()
 
-    return render(request, "dont_be_late_management/trips/trips.html", {
-        "locations": locations,
-        "trips": trips,
-        "select_form": select_form,
-        "selected_trip": selected_trip,
-    })
-
+    return render(
+        request,
+        "dont_be_late_management/trips/trips.html",
+        {
+            "locations": locations,
+            "trips": trips,
+        },
+    )
 
 @login_required
 def select_trip(request):
@@ -50,6 +59,25 @@ def cancel_add_trip_line(request):
         "trip": trip,
     })
 
+class NewTrip(LoginRequiredMixin, View):
+    def get(self, request):
+        form = TripForm()
+        return render(request, "dont_be_late_management/trips/partials/trip_form.html" , {"form": form})
+
+    def post(self, request):
+        form = TripForm(request.POST, user=request.user)
+
+        if form.is_valid():
+            trip = form.save(commit=False)
+            trip.user = request.user
+            trip.save()
+            response = HttpResponse(status=204)
+            return response
+
+        return render(request, "dont_be_late_management/trips/partials/trip_form.html", {
+            "form": form,
+            "locations": get_active_locations(request.user),
+        }, status=400)
 
 class NewTripLine(LoginRequiredMixin, View):
     def get(self, request):
@@ -104,41 +132,29 @@ class NewLocation(LoginRequiredMixin, View):
         return render(request, "dont_be_late_management/trips/partials/location_form.html", {"form": form})
 
 
-class NewTrip(LoginRequiredMixin, View):
-    def get(self, request):
-        form = TripForm()
-        return render(request, "trips/partials/trip_form.html" , {"form": form})
+@login_required
+def filter_routes(request):
+    query = request.GET.get("q", "").strip()
 
-    def post(self, request):
-        form = TripForm(request.POST, user=request.user)
+    routes = Route.objects.order_by("short_name", "long_name")
+    if query:
+        routes = routes.filter(display_name__icontains=query)
+    routes = routes[:100]
 
-        if form.is_valid():
-            trip = form.save(commit=False)
-            trip.user = request.user
-            trip.save()
-            response = HttpResponse(status=204)
-            return response
-
-        return render(request, "trips/partials/trip_form.html", {
-            "form": form,
-            "locations": get_active_locations(request.user),
-        }, status=400)
+    return render(request, "dont_be_late_management/trips/partials/route_suggestions.html", {
+        "routes": routes,
+    })
 
 
-class NewTripLine(LoginRequiredMixin, View):
-    def get(self, request):
-        form = TripLineForm()
-        return render(request, "trips/partials/trip_line_form.html", {"form": form})
+@login_required
+def filter_stops(request):
+    query = request.GET.get("q", "").strip()
 
-    def post(self, request):
-        trip = get_object_or_404(Trip, user=request.user)
-        form = TripLineForm(request.POST)
+    stops = Stop.objects.order_by("name")
+    if query:
+        stops = stops.filter(name__icontains=query)
+    stops = stops[:100]
 
-        if form.is_valid():
-            trip_line = form.save(commit=False)
-            trip_line.trip = trip
-            trip_line.save()
-
-            return render(request, "trips/partials/trip_line_item.html", {"trip_line": trip_line})
-
-        return render(request, "trips/partials/trip_line_form.html", {"form": form}, status=400)
+    return render(request, "dont_be_late_management/trips/partials/stop_suggestions.html", {
+        "stops": stops,
+    })

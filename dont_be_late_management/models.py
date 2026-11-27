@@ -16,12 +16,13 @@ class Stop(models.Model):
 # Imported RATP data for lines
 class Route(models.Model):
   route_id = models.CharField(max_length=100, unique=True) # ex: IDFM:C01742
+  display_name = models.CharField(max_length=500)
   short_name = models.CharField(max_length=50) # ex: "A", "1"
   long_name = models.CharField(max_length=255)  # ex: "Cergy-le-Haut <> Marne-la-Vallée"
   route_type = models.IntegerField()  # 0 = tram, 1 = metro, 2 = RER, 3 = bus
 
   def __str__(self):
-      return self.short_name + "(" + self.long_name + ")"
+      return self.display_name
 
 
 class Location(models.Model):
@@ -88,6 +89,7 @@ class TripLine(models.Model):
     trip = models.ForeignKey(
         Trip,
         on_delete=models.CASCADE,
+        related_name="transfers"
     )
     route = models.ForeignKey(Route, on_delete=models.DO_NOTHING, related_name="trips")
     origin_stop = models.ForeignKey(Stop, on_delete=models.DO_NOTHING, related_name="trips_from")

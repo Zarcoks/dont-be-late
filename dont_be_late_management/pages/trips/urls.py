@@ -10,4 +10,6 @@ urlpatterns = [
     path("locations/cancel", views.cancel_create_location, name="cancel_create_location"),
     path("locations/new/", views.NewLocation.as_view(), name="new_location"),
     path("new/", views.NewTrip.as_view(), name="trip_create"),
+    path("routes/filter/", views.filter_routes, name="route_filter"),
+    path("stops/filter/", views.filter_stops, name="stop_filter"),
 ]

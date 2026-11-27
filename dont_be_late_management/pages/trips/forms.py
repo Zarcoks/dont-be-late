@@ -1,5 +1,5 @@
 from django import forms
-from dont_be_late_management.models import Location, Trip, TripLine
+from dont_be_late_management.models import Location, Trip, TripLine, Route, Stop
 
 
 class LocationForm(forms.ModelForm):
@@ -40,24 +40,67 @@ class TripSelectForm(forms.Form):
             self.fields["trip"].initial = first_trip.pk
 
 
+from django import forms
+from dont_be_late_management.models import Location, Route, Stop, Trip, TripLine
+
+
 class TripLineForm(forms.ModelForm):
-  class Meta:
-    model = TripLine
-    fields = ["route", "origin_stop", "arrival_stop"]
-    widgets = {
-      "route": forms.TextInput(attrs={
-        "class": "form-control form-control-sm",
-        "placeholder": "Line",
-        "list": "lines",
-      }),
-      "origin_stop": forms.TextInput(attrs={
-        "class": "form-control form-control-sm",
-        "placeholder": "From",
-        "list": "stops",
-      }),
-      "arrival_stop": forms.TextInput(attrs={
-        "class": "form-control form-control-sm",
-        "placeholder": "To",
-        "list": "stops",
-      }),
-    }
+    route = forms.CharField(
+        widget=forms.TextInput(attrs={
+            "class": "form-control form-control-sm",
+            "placeholder": "Line (e.g. RER A)",
+            "list": "route-suggestions",
+        })
+    )
+    origin_stop = forms.CharField(
+        widget=forms.TextInput(attrs={
+            "class": "form-control form-control-sm",
+            "placeholder": "From stop",
+            "list": "stop-suggestions",
+        })
+    )
+    arrival_stop = forms.CharField(
+        widget=forms.TextInput(attrs={
+            "class": "form-control form-control-sm",
+            "placeholder": "To stop",
+            "list": "stop-suggestions",
+        })
+    )
+
+    class Meta:
+        model = TripLine
+        fields = ["route", "origin_stop", "arrival_stop"]
+
+    def _resolve_stop(self, raw_value):
+        value = (raw_value or "").strip()
+        if not value:
+            raise forms.ValidationError("Please choose a stop.")
+
+        matched_stop = Stop.objects.filter(name__iexact=value).first()
+        if matched_stop is None:
+            matched_stop = Stop.objects.filter(name__icontains=value).first()
+
+        if matched_stop is None:
+            raise forms.ValidationError("Unknown stop.")
+
+        return matched_stop
+
+    def clean_route(self):
+        value = (self.cleaned_data.get("route") or "").strip()
+        if not value:
+            raise forms.ValidationError("Please enter a line.")
+
+        matched_route = Route.objects.filter(display_name__iexact=value).first()
+        if matched_route is None:
+            matched_route = Route.objects.filter(display_name__icontains=value).first()
+
+        if matched_route is None:
+            raise forms.ValidationError("Unknown line.")
+
+        return matched_route
+
+    def clean_origin_stop(self):
+        return self._resolve_stop(self.cleaned_data.get("origin_stop"))
+
+    def clean_arrival_stop(self):
+        return self._resolve_stop(self.cleaned_data.get("arrival_stop"))
