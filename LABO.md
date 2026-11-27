@@ -108,3 +108,7 @@ IDFM ne fournit pas la durée du retard, seulement la gravité et la période. O
 **Deraina :**
 J'ai testé le début du worker 1 qui regarde les perturbations de la veille avec le mock de calendrier de Victor et mon mock de perturbations. 
 Les début du worker me semble fonctionnel. Il reste à check les perturbations qui affectent le trajet de l'utilisateur et de connaitre le temps de marge à prendre avec la fonction estimate_delay 
+
+Remarque (à confirmer avec Victor): Pour l'instant notre modèle fait que le trajet est relié à l'utilisateur et non à un événement ce qui peut limiter l
+
+Pour la suite du worker, l'idée est de récuperer les lignes dans le trajet de user. Ensuite on récupère toutes les perturbations. On regarde parmi les perturbations s'il y en a qui touchent les lignes du trajet et on récupère uniquement ces perturbations. On vérifie au préalable si elles touchent bien les lignes au moment du départ (ex : des travaux peuvent être relevés mais prévus que la semaine pro). 
