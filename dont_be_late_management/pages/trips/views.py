@@ -11,12 +11,9 @@ from dont_be_late_management.pages.trips.forms import *
 def get_active_locations(user):
     return user.locations.all().filter(is_deleted=False).order_by('pk') # This should always return Home first
 
-
-@login_required
-def trips_dashboard(request):
-    locations = get_active_locations(request.user)
-    trips = (
-        Trip.objects.filter(user=request.user)
+def get_user_trips(user):
+    return (
+        Trip.objects.filter(user=user)
         .select_related("origin_location", "arrival_location")
         .prefetch_related(
             Prefetch(
@@ -29,12 +26,15 @@ def trips_dashboard(request):
         )
     )
 
+@login_required
+def trips_dashboard(request):
     return render(
         request,
         "dont_be_late_management/trips/trips.html",
         {
-            "locations": locations,
-            "trips": trips,
+            "locations": get_active_locations(request.user),
+            "trips": get_user_trips(request.user),
+            "form": TripForm(user=request.user),
         },
     )
 
@@ -71,13 +71,32 @@ class NewTrip(LoginRequiredMixin, View):
             trip = form.save(commit=False)
             trip.user = request.user
             trip.save()
-            response = HttpResponse(status=204)
-            return response
 
-        return render(request, "dont_be_late_management/trips/partials/trip_form.html", {
-            "form": form,
-            "locations": get_active_locations(request.user),
-        }, status=400)
+            return render(
+                request,
+                "dont_be_late_management/trips/partials/trip_detail.html",
+                {"trips": get_user_trips(request.user)},
+            )
+
+        response = render(
+            request,
+            "dont_be_late_management/trips/partials/new_trip_card.html",
+            {
+                "form": form,
+                "locations": get_active_locations(request.user),
+            },
+        )
+        response["HX-Retarget"] = "#new-trip-card"
+        response["HX-Reswap"] = "outerHTML"
+        return response
+
+
+@login_required
+def delete_trip(request, trip_id):
+    trip = get_object_or_404(Trip, pk=trip_id, user=request.user)
+    trip.delete()
+    return HttpResponse("", status=200)
+
 
 class NewTripLine(LoginRequiredMixin, View):
     def get(self, request):
@@ -109,6 +128,13 @@ class NewTripLine(LoginRequiredMixin, View):
 
 
 @login_required
+def delete_trip_line(request, trip_line_id):
+    trip_line = get_object_or_404(TripLine, pk=trip_line_id, trip__user=request.user)
+    trip_line.delete()
+    return HttpResponse("", status=200)
+
+
+@login_required
 def get_locations(request):
     return render(request, 'dont_be_late_management/trips/partials/locations_list.html', {"locations": get_active_locations(request.user)})
 
@@ -131,6 +157,17 @@ class NewLocation(LoginRequiredMixin, View):
                           {"locations": get_active_locations(request.user)})
         return render(request, "dont_be_late_management/trips/partials/location_form.html", {"form": form})
 
+@login_required
+def delete_location(request, location_id):
+    location = get_object_or_404(Location, pk=location_id, user=request.user)
+    location.is_deleted = True
+    location.save()
+
+    return render(
+        request,
+        "dont_be_late_management/trips/partials/locations_list.html",
+        {"locations": get_active_locations(request.user)},
+    )
 
 @login_required
 def filter_routes(request):

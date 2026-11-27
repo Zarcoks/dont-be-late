@@ -72,4 +72,9 @@
 - Script pour importer les données de routes et stops depuis IDFM
 - Tout ce qui est trips, le new trip fonctionne, il reste l'ajout des différentes correspondances sur les trajets
 
+### Séance du 27/11/2026
+**Victor :**
+- Amélioration script import de données RATP
+- Ajout formulaire pour déclarer des transfers
+
 TODO Docker

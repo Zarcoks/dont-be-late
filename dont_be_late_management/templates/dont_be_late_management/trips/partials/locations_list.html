@@ -1,10 +1,18 @@
-<ul class="list-group list-group-flush" id="locations-list" {% if oob %}hx-swap-oob="true"{% endif %}>
+<ul class="list-group list-group-flush">
     {% for location in locations %}
-    <li class="list-group-item">
-        <div class="fw-semibold">{{ location.name }}</div>
-        <small class="text-body-secondary">
-            {{ location.address }}, {{ location.postal }} {{ location.city }}
-        </small>
-    </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span>{{ location.name }}</span>
+            <button
+                class="btn btn-outline-danger btn-sm"
+                type="button"
+                hx-delete="{% url 'location_delete' location.id %}"
+                hx-target="#locations-container"
+                hx-swap="innerHTML"
+                hx-confirm="Delete '{{ location.name }}'?">
+                Delete
+            </button>
+        </li>
+    {% empty %}
+        <li class="list-group-item small text-body-secondary">No locations yet.</li>
     {% endfor %}
 </ul>

@@ -1,0 +1,49 @@
+<div id="new-trip-card" class="card mb-4">
+    <div class="card-header fw-semibold">New trip</div>
+    <form
+        class="card-body row g-2 align-items-end"
+        hx-post="{% url 'trip_create' %}"
+        hx-target="#trips-list-container"
+        hx-swap="outerHTML"
+        hx-on::after-request="if (event.detail.successful) this.reset()">
+        {% csrf_token %}
+
+        <div class="col-sm-5">
+            <label class="form-label small" for="trip_origin">From</label>
+            <select class="form-select" id="trip_origin" name="origin_location">
+                <option value="">---------</option>
+                {% for location in locations %}
+                    <option
+                        value="{{ location.id }}"
+                        {% if form.origin_location.value|stringformat:"s" == location.id|stringformat:"s" %}selected{% endif %}>
+                        {{ location.name }}
+                    </option>
+                {% endfor %}
+            </select>
+            {% if form.origin_location.errors %}
+                <div class="text-danger small mt-1">{{ form.origin_location.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="col-sm-5">
+            <label class="form-label small" for="trip_destination">To</label>
+            <select class="form-select" id="trip_destination" name="arrival_location">
+                <option value="">---------</option>
+                {% for location in locations %}
+                    <option
+                        value="{{ location.id }}"
+                        {% if form.arrival_location.value|stringformat:"s" == location.id|stringformat:"s" %}selected{% endif %}>
+                        {{ location.name }}
+                    </option>
+                {% endfor %}
+            </select>
+            {% if form.arrival_location.errors %}
+                <div class="text-danger small mt-1">{{ form.arrival_location.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="col-sm-2">
+            <button class="btn btn-primary w-100" type="submit">Create</button>
+        </div>
+    </form>
+</div>

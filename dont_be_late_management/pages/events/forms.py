@@ -1,6 +1,6 @@
 from django import forms
 import requests
-from dont_be_late_management.models import Calendar, CalendarEvent
+from dont_be_late_management.models import Calendar, CalendarEvent, Location
 
 
 class CalendarForm(forms.ModelForm):
@@ -30,3 +30,7 @@ class EventEditForm(forms.ModelForm):
         widgets = {
             'location': forms.Select(attrs={'class': 'form-select form-select-sm'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['location'].queryset = Location.objects.filter(is_deleted=False)

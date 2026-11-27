@@ -12,4 +12,7 @@ urlpatterns = [
     path("new/", views.NewTrip.as_view(), name="trip_create"),
     path("routes/filter/", views.filter_routes, name="route_filter"),
     path("stops/filter/", views.filter_stops, name="stop_filter"),
+    path("trips/<int:trip_id>/delete/", views.delete_trip, name="trip_delete"),
+    path("trip-lines/<int:trip_line_id>/delete/", views.delete_trip_line, name="trip_line_delete"),
+    path("locations/<int:location_id>/delete/", views.delete_location, name="location_delete"),
 ]
