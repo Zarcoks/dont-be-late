@@ -20,7 +20,10 @@
                 hx-target="#route-suggestions"
                 hx-swap="outerHTML"
                 hx-trigger="keyup changed delay:250ms, focus"
-                hx-vals='js:{"q": document.getElementById("{{ form.route.id_for_label }}").value}'>
+                hx-vals='js:{
+                    "q": this.value,
+                    "route": this.closest("form").querySelector("[name=\"{{ form.route.html_name }}\"]").value
+                }'>
             {% include "dont_be_late_management/trips/partials/route_suggestions.html" with routes=routes|default:None %}
             {% if form.route.errors %}
                 <div class="text-danger small mt-1">{{ form.route.errors.0 }}</div>
@@ -40,7 +43,10 @@
                 hx-target="#stop-suggestions"
                 hx-swap="outerHTML"
                 hx-trigger="keyup changed delay:250ms, focus"
-                hx-vals='js:{"q": document.getElementById("{{ form.origin_stop.id_for_label }}").value}'>
+                hx-vals='js:{
+                    "q": document.getElementById("{{ form.origin_stop.id_for_label }}").value,
+                    "route": document.getElementById("{{ form.route.id_for_label }}").value
+                }'>
             {% if form.origin_stop.errors %}
                 <div class="text-danger small mt-1">{{ form.origin_stop.errors.0 }}</div>
             {% endif %}
@@ -59,8 +65,10 @@
                 hx-target="#stop-suggestions"
                 hx-swap="outerHTML"
                 hx-trigger="keyup changed delay:250ms, focus"
-                hx-vals='js:{"q": document.getElementById("{{ form.arrival_stop.id_for_label }}").value}'>
-{#        TODO change to better the js line #}
+                hx-vals='js:{
+                    "q": document.getElementById("{{ form.arrival_stop.id_for_label }}").value,
+                    "route": document.getElementById("{{ form.route.id_for_label }}").value
+                }'>
             {% include "dont_be_late_management/trips/partials/stop_suggestions.html" with stops=stops|default:None %}
             {% if form.arrival_stop.errors %}
                 <div class="text-danger small mt-1">{{ form.arrival_stop.errors.0 }}</div>

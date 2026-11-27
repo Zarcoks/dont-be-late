@@ -7,7 +7,6 @@ API_URL = (
     "datasets/arrets-lignes/records"
 )
 
-# Exact IDFM mode values -> (route_type, display_name prefix)
 MODES = {
     "Tramway": (0, "Tram"),
     "Metro": (1, "Metro"),
@@ -16,63 +15,85 @@ MODES = {
 
 
 class Command(BaseCommand):
-    help = "Simple import of stops and routes for Tramway, Metro, and RER"
+    help = "Import stops, routes, and stop-route relations"
 
     def handle(self, *args, **options):
-        limit = 100
+        for mode_api, (route_type, prefix) in MODES.items():
+            self.stdout.write(f"Importing {prefix} ({mode_api})...")
+            records = self.fetch_records_for_mode(mode_api)
 
-        for mode_api, (route_type, transport_label) in MODES.items():
-            offset = 0
-            self.stdout.write(f"Importing {mode_api} ({transport_label})...")
+            for row in records:
+                stop = self.get_or_create_stop(row)
+                route = self.get_or_create_route(row, route_type, prefix)
 
-            while True:
-                response = requests.get(
-                    API_URL,
-                    params={
-                        "limit": limit,
-                        "offset": offset,
-                        "where": f'mode="{mode_api}"',
-                    },
-                    timeout=30,
-                )
-                response.raise_for_status()
-                data = response.json()
-                records = data.get("results", [])
-
-                if not records:
-                    break
-
-                for item in records:
-                    stop_id = item.get("stop_id")
-                    stop_name = item.get("stop_name")
-                    if stop_id and stop_name:
-                        Stop.objects.get_or_create(
-                            stop_id=stop_id[:100],
-                            defaults={"name": stop_name[:255]},
-                        )
-
-                    route_id = item.get("id")
-                    if route_id:
-                        short_name = str(item.get("shortname") or "").strip()[:50]
-                        long_name = str(item.get("route_long_name") or "").strip()[:255]
-                        display_name = (
-                            f"{transport_label} {short_name}".strip()
-                            if short_name
-                            else transport_label
-                        )[:500]
-
-                        Route.objects.get_or_create(
-                            route_id=route_id[:100],
-                            defaults={
-                                "display_name": display_name,
-                                "short_name": short_name,
-                                "long_name": long_name,
-                                "route_type": route_type,
-                            },
-                        )
-
-                offset += limit
-                if offset >= data.get("total_count", 0):
-                    break
+                if stop and route:
+                    stop.routes.add(route)
 
         self.stdout.write(self.style.SUCCESS("Import completed!"))
+
+    def fetch_records_for_mode(self, mode_api):
+        all_records = []
+        offset = 0
+        limit = 100
+
+        while True:
+            response = requests.get(
+                API_URL,
+                params={
+                    "limit": limit,
+                    "offset": offset,
+                    "where": f'mode="{mode_api}"',
+                },
+                timeout=30,
+            )
+            response.raise_for_status()
+            data = response.json()
+
+            page_records = data.get("results", [])
+            if not page_records:
+                break
+
+            all_records.extend(page_records)
+            offset += limit
+
+            if offset >= data.get("total_count", 0):
+                break
+
+        return all_records
+
+    def get_or_create_stop(self, row):
+        stop_id = row.get("stop_id")
+        stop_name = row.get("stop_name")
+
+        if not stop_id or not stop_name:
+            return None
+
+        stop, _ = Stop.objects.get_or_create(
+            stop_id=stop_id[:100],
+            defaults={"name": stop_name[:255]},
+        )
+        return stop
+
+    def get_or_create_route(self, row, route_type, prefix):
+        route_id = row.get("id")
+        if not route_id:
+            return None
+
+        short_name = str(row.get("shortname") or "").strip()[:50]
+        long_name = str(row.get("route_long_name") or "").strip()[:255]
+
+        if short_name:
+            display_name = f"{prefix} {short_name}"
+        else:
+            display_name = prefix
+
+        route, _ = Route.objects.get_or_create(
+            route_id=route_id[:100],
+            defaults={
+                "display_name": display_name[:500],
+                "short_name": short_name,
+                "long_name": long_name,
+                "route_type": route_type,
+            },
+        )
+        return route

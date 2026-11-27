@@ -6,11 +6,12 @@ from django.db import models
 
 # Imported RATP data for stops
 class Stop(models.Model):
-  stop_id = models.CharField(max_length=100, unique=True)
-  name = models.CharField(max_length=255)
+    stop_id = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=255)
+    routes = models.ManyToManyField("Route", related_name="stops", blank=True)
 
-  def __str__(self):
-    return self.name
+    def __str__(self):
+        return self.name
 
 
 # Imported RATP data for lines

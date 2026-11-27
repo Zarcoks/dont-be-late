@@ -186,12 +186,32 @@ def filter_routes(request):
 @login_required
 def filter_stops(request):
     query = request.GET.get("q", "").strip()
+    route_query = request.GET.get("route", "").strip()
 
-    stops = Stop.objects.order_by("name")
+    if not route_query:
+        return render(
+            request,
+            "dont_be_late_management/trips/partials/stop_suggestions.html",
+            {"stops": []},
+        )
+
+    matched_route = Route.objects.filter(display_name__iexact=route_query).first()
+    if matched_route is None:
+        matched_route = Route.objects.filter(display_name__icontains=route_query).first()
+
+    if matched_route is None:
+        return render(
+            request,
+            "dont_be_late_management/trips/partials/stop_suggestions.html",
+            {"stops": []},
+        )
+
+    stops = matched_route.stops.order_by("name")
     if query:
         stops = stops.filter(name__icontains=query)
-    stops = stops[:100]
 
-    return render(request, "dont_be_late_management/trips/partials/stop_suggestions.html", {
-        "stops": stops,
-    })
+    return render(
+        request,
+        "dont_be_late_management/trips/partials/stop_suggestions.html",
+        {"stops": stops[:100]},
+    )

@@ -41,7 +41,7 @@ class TripSelectForm(forms.Form):
 
 
 from django import forms
-from dont_be_late_management.models import Location, Route, Stop, Trip, TripLine
+from dont_be_late_management.models import Location, Route, Stop, TripLine
 
 
 class TripLineForm(forms.ModelForm):
@@ -71,36 +71,41 @@ class TripLineForm(forms.ModelForm):
         model = TripLine
         fields = ["route", "origin_stop", "arrival_stop"]
 
-    def _resolve_stop(self, raw_value):
-        value = (raw_value or "").strip()
-        if not value:
-            raise forms.ValidationError("Please choose a stop.")
-
-        matched_stop = Stop.objects.filter(name__iexact=value).first()
-        if matched_stop is None:
-            matched_stop = Stop.objects.filter(name__icontains=value).first()
-
-        if matched_stop is None:
-            raise forms.ValidationError("Unknown stop.")
-
-        return matched_stop
-
     def clean_route(self):
         value = (self.cleaned_data.get("route") or "").strip()
         if not value:
             raise forms.ValidationError("Please enter a line.")
 
-        matched_route = Route.objects.filter(display_name__iexact=value).first()
-        if matched_route is None:
-            matched_route = Route.objects.filter(display_name__icontains=value).first()
-
-        if matched_route is None:
+        route = (
+            Route.objects.filter(display_name__iexact=value).first()
+            or Route.objects.filter(display_name__icontains=value).first()
+        )
+        if not route:
             raise forms.ValidationError("Unknown line.")
 
-        return matched_route
+        return route
+
+    def _find_stop_on_route(self, raw_value, route):
+        value = (raw_value or "").strip()
+        if not value:
+            raise forms.ValidationError("Please choose a stop.")
+
+        if not route:
+            raise forms.ValidationError("Please select a valid line first.")
+
+        stop = (
+            route.stops.filter(name__iexact=value).first()
+            or route.stops.filter(name__icontains=value).first() # Again this is not ideal because we may have other stops linked to the line TODO
+        )
+        if not stop:
+            raise forms.ValidationError("This stop is not associated with the selected line.")
+
+        return stop
 
     def clean_origin_stop(self):
-        return self._resolve_stop(self.cleaned_data.get("origin_stop"))
+        route = self.cleaned_data.get("route")
+        return self._find_stop_on_route(self.cleaned_data.get("origin_stop"), route)
 
     def clean_arrival_stop(self):
-        return self._resolve_stop(self.cleaned_data.get("arrival_stop"))
+        route = self.cleaned_data.get("route")
+        return self._find_stop_on_route(self.cleaned_data.get("arrival_stop"), route)
